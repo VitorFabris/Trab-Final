@@ -1,0 +1,5 @@
+Fazer um jogo onde o usuario escolhe entre 3 portas
+as 3 primeiras fases tem uma pergunta para voce adivinhar a porta
+e as subsequentes tem de testar sua memoria
+entao as portas vao perguntando aonde era a porta do lvl 3 por exemplo
+ate algum level por exemplo o 60
