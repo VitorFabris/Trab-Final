@@ -27,7 +27,7 @@ void error_msg(char *text){
 		text,NULL,ALLEGRO_MESSAGEBOX_ERROR);
 }
  
- //this f*ckn sh*t its just to see if there is some error while initializing anything, we set all NULL of course 
+ //this THING is just to see if there is some error while initializing anything, we set all NULL of course before start this 
 int iniciar(){
     if (!al_init()){
         error_msg("Error in Allegro initializating");
@@ -224,7 +224,7 @@ int iniciar(){
        return -1;
      }
     
-    //criando um cubo em bitmap para cada quadrado do jogo
+    //a bitmap for each door
      porta1 = al_create_bitmap(200,500);
      if (!porta1){
        error_msg("Error in bitmap creating");
@@ -273,7 +273,7 @@ int iniciar(){
         return -1;
     }
     
-    //there is a event register, in this case of the keyboard and display
+    //there is a event register, in this case of the keyboard and display,etc
     al_register_event_source(fila, al_get_keyboard_event_source());
     al_register_event_source(fila, al_get_mouse_event_source()); 
     al_register_event_source(fila, al_get_display_event_source(display));
@@ -283,7 +283,7 @@ int iniciar(){
     
     return 1;
 }
-
+//here we just made the doors drawing
     void portas(){
        al_set_target_bitmap(porta1);
        al_clear_to_color(al_map_rgb(255,255,255));
@@ -297,7 +297,7 @@ int iniciar(){
        al_draw_bitmap(porta3,740,100,0);
        al_flip_display();
     }
-    
+    //unfortunately, there is 3 kind of voids, each one, to clear each door and draw the nunber
     void p(int a, int b, int c){
          al_set_target_bitmap(porta1);
          al_clear_to_color(al_map_rgb(a,b,c));
@@ -323,22 +323,50 @@ int iniciar(){
        al_flip_display();
     }
     
+    //one struct for each thing, first to save the questions and after to save options to answer
+    //questions
     struct quest{
            char q[1000];
     };
-    
-    typedef struct quest qu;
+    //answers
+    struct ans{
+           char a[1000];
+           char b[1000];
+           char c[1000];
+    };
+    typedef struct quest    qu;
+    typedef struct ans    swer;
     void menu();
     void lvl();
     void destroir();
+    // getting the options from file
+    swer *questionop(){
+         int i;
+         swer *v;
+         FILE *f;
+         v=(swer*) malloc(30*sizeof(swer));
+         f = fopen("options.txt","r");
+         for(i=0;i<30;i++){
+            fgets(v[i].a, 1000, f);
+            v[i].a[strlen(v[i].a)-1]='\0';
+            fgets(v[i].b, 1000, f);
+            v[i].b[strlen(v[i].b)-1]='\0';
+            fgets(v[i].c, 1000, f);
+            v[i].c[strlen(v[i].c)-1]='\0';
+            
+         }
+         fclose(f);
+         return v;
     
+    }
+    //getting questions from file
     qu *question(){
          int i;
          qu *v;
          FILE *f;
-         v=(qu*) malloc(50*sizeof(qu));
+         v=(qu*) malloc(30*sizeof(qu));
          f = fopen("questions.txt","r");
-         for(i=0;i<50;i++){
+         for(i=0;i<30;i++){
             fgets(v[i].q, 1000, f);
             v[i].q[strlen(v[i].q)-1]='\0';
             
@@ -347,14 +375,14 @@ int iniciar(){
          return v;
     
     }
-    
+    //now we need read each level answer from a file
     int *answer(){
          int i;
          int *v;
          FILE *f;
-         v=(int*) malloc(50*sizeof(int));
+         v=(int*) malloc(30*sizeof(int));
          f = fopen("answers.txt","r");
-         for(i=0;i<50;i++){
+         for(i=0;i<30;i++){
             fscanf(f,"%d",&v[i]);
             
          }
@@ -363,12 +391,14 @@ int iniciar(){
     
     }
     
-    void makeAquestion(qu *v,int *vn,int *l,int fase){
+    //here we made a question
+    
+    void makeAquestion(qu *v,int *vn,int *l,int fase,swer *a){
          srand(time(NULL));
          int ex=0;
          do{
          printf("here\n");
-         *l=rand()%50;
+         *l=rand()%30;
          if(!vn[*l])
                ex=1;
          }while(!ex);
@@ -376,14 +406,21 @@ int iniciar(){
          printf("%s",v[*l].q);
          if(fase==6||fase==14||fase==22||fase==30)
          al_draw_text(font2,al_map_rgb(0,255,0),540,20, ALLEGRO_ALIGN_CENTRE, "Vai na Sorte");
-         else
-         al_draw_textf(font2,al_map_rgb(0,255,0),540,20, ALLEGRO_ALIGN_CENTRE, "Fase %d: %s",fase+1,v[*l].q);
+         else if(fase==32){
+         al_draw_text(font2,al_map_rgb(0,255,0),540,20, ALLEGRO_ALIGN_CENTRE, "Voce descobriu a verdade?");
+         al_draw_text(font2,al_map_rgb(0,255,0),540,40, ALLEGRO_ALIGN_CENTRE, "1-Assasino 2-Ressaca 3-Tranco o curso");
+         }
+         else{
+         al_draw_textf(font2,al_map_rgb(0,255,0),540,15, ALLEGRO_ALIGN_CENTRE, "Fase %d: %s",fase+1,v[*l].q);
+         al_draw_textf(font2,al_map_rgb(0,255,0),540,40, ALLEGRO_ALIGN_CENTRE, "1- %s 2- %s 3- %s",a[*l].a,a[*l].b,a[*l].c);
+         }
          al_flip_display();
          vn[*l]=1;
          
          
     }
     
+    //HERE WE HAVE A DIFFERENT QUESTION FOR IF THERE IS THE SPECIAL LEVEL WICH WE MUST REMEMBER A PREVIOUS LEVEL ANSWER
     int testYourbrain(int fases){
          srand(time(NULL));
          int l;
@@ -392,19 +429,23 @@ int iniciar(){
          l=1 + rand()%fases-1;
          if(fases==6||fases==14||fases==22||fases==30)
          al_draw_text(font2,al_map_rgb(0,255,0),540,20, ALLEGRO_ALIGN_CENTRE, "Vai na Sorte");
+         else if(fases==32){
+         al_draw_text(font2,al_map_rgb(0,255,0),540,15, ALLEGRO_ALIGN_CENTRE, "Voce descobriu a verdade?");
+         al_draw_text(font2,al_map_rgb(0,255,0),540,40, ALLEGRO_ALIGN_CENTRE, "1-Assasino 2-Ressaca 3-Tranco o curso");
+         }
          else
          al_draw_textf(font2,al_map_rgb(0,255,0),540,20, ALLEGRO_ALIGN_CENTRE, "Level %d: What was the level %d answer?",fases+1,l+1);
          al_flip_display();
          return l;
     }
-    
+    //just start a level
     void start(){
          al_clear_to_color(al_map_rgb(0,0,0));
          portas(); 
     }
     
     void destroir();
-    
+    //the keyboard input for name
     char *Nome(){
                al_clear_to_color(al_map_rgb(0,255,0));
                
@@ -413,9 +454,9 @@ int iniciar(){
                a=(char*) malloc(10*sizeof(char));
                int i=0,EndName=0,donterase=0;
                while(!EndName){   
-                   al_draw_text(font,al_map_rgb(255,255,255),540,100, ALLEGRO_ALIGN_CENTRE, "Digite seu Nome:");
+                   al_draw_text(font,al_map_rgb(255,255,255),540,80, ALLEGRO_ALIGN_CENTRE, "Digite seu Nome:");
                    al_draw_text(font2,al_map_rgb(255,255,255),540,140, ALLEGRO_ALIGN_CENTRE, "Utilize Backspace para apagar algo e Enter para enviar");
-                   al_draw_text(font2,al_map_rgb(255,255,255),540,160, ALLEGRO_ALIGN_CENTRE, "No maximo 10 letras.");
+                   al_draw_text(font2,al_map_rgb(255,255,255),540,165, ALLEGRO_ALIGN_CENTRE, "No maximo 10 letras.");
                    al_flip_display();
                    ALLEGRO_EVENT sta;
                    al_wait_for_event(fila,&sta);
@@ -541,7 +582,7 @@ int iniciar(){
           
           }
     
-    
+    //here we have a menu 
     void menu(char *nome){
          int ex=0,tem=0;
          al_clear_to_color(al_map_rgb(0,255,0));
@@ -582,15 +623,15 @@ int iniciar(){
                   
          }
      }
-
+    //this void get the answer of the level to compare
      void Actualanswer(int *n){
-          int i,w=140,ans=0,ativo=0;
+          int i,w=140,ans=0,ativo=0,ocorreu=0;
           printf("\nentro na resposta\n");
           
           while(!ans){
                  ativo=0;
-                 
-                 while (!al_is_event_queue_empty(fila)){
+                 ocorreu=0;
+                 while (!ocorreu){
                      ALLEGRO_EVENT evento;
                      al_wait_for_event(fila,&evento); 
                    if(evento.type == ALLEGRO_EVENT_MOUSE_AXES){
@@ -598,15 +639,20 @@ int iniciar(){
                                w=140;
                        if(evento.mouse.x>=w&&evento.mouse.x<=w+200&&evento.mouse.y>=100&&evento.mouse.y<=600){
                        ativo=1;
+                       ocorreu=1;
                        }
                        else if(evento.mouse.x>=w+300&&evento.mouse.x<=w+500&&evento.mouse.y>=100&&evento.mouse.y<=600){
                        ativo=2;
+                       ocorreu=1;
                        }
                        else if(evento.mouse.x>=w+600&&evento.mouse.x<=w+800&&evento.mouse.y>=100&&evento.mouse.y<=600){
                        ativo=3;
+                       ocorreu=1;
                        }
-                       else
-                       ativo=0;
+                       else{
+                            ativo=0;
+                            ocorreu=1;
+                            }
                        
                    } 
                    if(evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP){
@@ -614,16 +660,19 @@ int iniciar(){
                        if(evento.mouse.x>=w&&evento.mouse.x<=w+200&&evento.mouse.y>=100&&evento.mouse.y<=600){
                                     *n=1;
                                     ans++;
+                                    ocorreu=1;
                        }
                        w+=300; 
                        if(evento.mouse.x>=w&&evento.mouse.x<=w+200&&evento.mouse.y>=100&&evento.mouse.y<=600){
                                     *n=2;
                                     ans++;
+                                    ocorreu=1;
                        }
                        w+=300; 
                        if(evento.mouse.x>=w&&evento.mouse.x<=w+200&&evento.mouse.y>=100&&evento.mouse.y<=600){
                                     *n=3;
                                     ans++;
+                                    ocorreu=1;
                        }
                    }
                 }
@@ -645,8 +694,9 @@ int iniciar(){
           }
      
      }
+     //here we have al the configurations of the levels
 
-     void lvl(qu *vet,int *vetnum,int *resp,int *perg,int fase,int *rsp,int p){
+     void lvl(qu *vet,int *vetnum,int *resp,int *perg,int fase,int *rsp,int p,swer *a){
             int fasee;
             srand(time(NULL));
             if(fase<15)
@@ -656,61 +706,21 @@ int iniciar(){
             else
             fasee=rand()%1;
             start();
-            al_draw_textf(font2,al_map_rgb(255,255,255),900,20, ALLEGRO_ALIGN_CENTRE, "Pontos: %d",p);
+            al_draw_textf(font2,al_map_rgb(255,255,255),900,40, ALLEGRO_ALIGN_CENTRE, "Pontos: %d",p);
             al_flip_display();
             if(fasee==1&&fase>3){
                         *rsp=1;
                         *perg=testYourbrain(fase);
             }
             else{
-                 makeAquestion(vet,vetnum,perg,fase);
+                 makeAquestion(vet,vetnum,perg,fase,a);
                  *rsp=0;
             }
             printf("\nja fez a questao\n");
             Actualanswer(resp);
      }
-
-     void Lost(int *resp, int *perg, int *ex,int *i,char *nome){
-         int exit=0,j;
-         al_clear_to_color(al_map_rgb(0,0,0));
-         al_draw_text(font,al_map_rgb(255,255,255),540, 50, ALLEGRO_ALIGN_CENTRE, nome);
-         al_draw_text(font,al_map_rgb(255,255,255),540,100, ALLEGRO_ALIGN_CENTRE, "PO IRMAO PERDEU!");
-         al_draw_text(font,al_map_rgb(255,255,255),540,150, ALLEGRO_ALIGN_CENTRE, "VAI FAZER O RANKING!");
-         al_draw_text(font,al_map_rgb(255,255,255),540,500, ALLEGRO_ALIGN_CENTRE, "PRESS ENTER TO QUIT");
-         al_draw_text(font,al_map_rgb(255,255,255),540,400, ALLEGRO_ALIGN_CENTRE, "PRESS R TO PLAY AGAIN");
-         al_flip_display();
-         while(!exit){
-               ALLEGRO_EVENT sta;
-               al_wait_for_event(fila,&sta);        
-               if(sta.type==ALLEGRO_EVENT_KEY_DOWN){
-                   if(sta.keyboard.keycode==ALLEGRO_KEY_ENTER){
-                        *ex=1;
-                        exit=1;
-                   }
-                   if(sta.keyboard.keycode==ALLEGRO_KEY_R){
-                       
-                       *ex=0;
-                       *i=0;
-                       for(j=0;j<50;j++){
-                                         *(resp+j)=0;
-                                         *(perg+j)=0;
-                       }
-                                         
-                       menu(nome);
-                       printf("saiu");
-                       exit=1;
-                       
-                       
-                   }
-               }
-               if(sta.type==ALLEGRO_EVENT_DISPLAY_CLOSE){
-                   destroir();
-               }       
-         }
-         printf("\nTem q sair daqui\n");
      
-     }
-
+     //just to destroy al the things of ALLEGRO
      void destroir(){
          al_destroy_display(display);
          al_destroy_event_queue(fila);
@@ -734,6 +744,7 @@ int iniciar(){
          al_destroy_font(font2);
      }
      
+     //Here we have a animation to garbage
      void animarlixo(int *champs){
           int altura=64,largura=64;
           int colunas=9, catu=0;
@@ -825,6 +836,7 @@ int iniciar(){
           
      }
      
+     //here a good animation
      void animardeVDD(int *champs){
           int altura=64,largura=64;
           int colunas=9, catu=0;
@@ -916,7 +928,7 @@ int iniciar(){
           
           
      }
-     
+     //the user can choice if the champion will be male or female
      void Male_Female(int *M_F,char *nome){
          al_clear_to_color(al_map_rgb(0,255,0));
          al_draw_text(font,al_map_rgb(255,255,255),540, 50, ALLEGRO_ALIGN_CENTRE, nome);
@@ -949,7 +961,7 @@ int iniciar(){
     }
     
     
-    
+    //a short history introduces the game
     void History(int choichoi){
         
         int ex=0;
@@ -1070,10 +1082,10 @@ int iniciar(){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
                 al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Ola, eu sou ...");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,30, ALLEGRO_ALIGN_CENTRE, "Espera eu sou voce na verdade, pode");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,50, ALLEGRO_ALIGN_CENTRE, "parecer um pouco estranho, mas seja");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,70, ALLEGRO_ALIGN_CENTRE, "bem vindo ao Tres portas, acalmesse" );
-                al_draw_text(font2,al_map_rgb(255,255,255),250,90, ALLEGRO_ALIGN_CENTRE, "eu irei 'me' contar nossa  historia...");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "Espera eu sou voce na verdade, pode");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "parecer um pouco estranho, mas seja");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "bem vindo ao Tres portas, acalmesse" );
+                al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "eu irei 'me' contar nossa  historia...");
                 al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
@@ -1082,10 +1094,10 @@ int iniciar(){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
                 al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Bom, como voce deve saber, ou melhor eu,");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,30, ALLEGRO_ALIGN_CENTRE, "sempre fomos muito amigaveis  com  todos");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,50, ALLEGRO_ALIGN_CENTRE, "adoravamos caminhar de noite como todos,");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,70, ALLEGRO_ALIGN_CENTRE, "mas em um certo dia algo muito  estranho");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,90, ALLEGRO_ALIGN_CENTRE, "aconteceu...");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "sempre fomos muito amigaveis  com  todos");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "adoravamos caminhar de noite como todos,");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "mas em um certo dia algo muito  estranho");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "aconteceu...");
                 al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
@@ -1094,9 +1106,9 @@ int iniciar(){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
                 al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Infelizmente nao nos lembramos de  tudo, mas");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,30, ALLEGRO_ALIGN_CENTRE, "eu acredito que talvez possamos descobrir,");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,50, ALLEGRO_ALIGN_CENTRE, "preciso de sua ajuda, ou no caso  da minha");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,70, ALLEGRO_ALIGN_CENTRE, "para descobrir quem nos trancou aqui...");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "eu acredito que talvez possamos descobrir,");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "preciso de sua ajuda, ou no caso  da minha");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "para descobrir quem nos trancou aqui...");
                 al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
@@ -1173,7 +1185,7 @@ int iniciar(){
         };
     
     typedef struct rnk RK;
-    
+    //this is a little intuitive
     void ranking(char *nome,int pontos){
         FILE *f;
         int i;
@@ -1277,8 +1289,7 @@ int iniciar(){
         
 }
      
-     //minijogo 1
-     
+     //MINI JOGO 1
      
      
      
@@ -1436,7 +1447,7 @@ int minijojo1(int *dica){    // MUDA O NOME DA FUNÇÃO PARA O NOME QUE VOCÊ FOR U
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(window, 220, 80, 0);
                 al_flip_display();
-                *dica = (firstPoints==3)?1:0;
+                *dica = (firstPoints==3)?0:1;
                 al_rest(2.f);
                 //break;
                 doexit=1;
@@ -1974,7 +1985,7 @@ ALLEGRO_FONT *font       = NULL;
       if(w_l){
               if(what!=2) what = 0;
                cabo(&ex,what,jogada,&w_l,&player,&cont);
-               *dica=what;
+               *dica=1;
             al_rest(2);
              goto label;
       }  
@@ -1988,7 +1999,7 @@ ALLEGRO_FONT *font       = NULL;
       if(w_l){
             if(what!=2) what = 1;
                  cabo(&ex,what,jogada,&w_l,&player,&cont);
-                 *dica=what;
+                 *dica=0;
                  al_rest(2);
       }     
       what=0;
@@ -2232,7 +2243,7 @@ int minijojo4(int *dica){
 
 //fim minijojo 4
 
-//introducao minijojo
+//introduction for each minigame
 
 void intro(int choichoi,int time){
     ALLEGRO_BITMAP *a;
@@ -2337,6 +2348,7 @@ void intro(int choichoi,int time){
         }
     
     }     
+    //this one gives a hint if you won the minigame
      void darDica(int choichoi,int time,int dica){
     ALLEGRO_BITMAP *a;
      al_clear_to_color(al_map_rgb(0,0,0));
@@ -2408,7 +2420,7 @@ void intro(int choichoi,int time){
                     al_draw_text(font2,al_map_rgb(255,255,255),250,55, ALLEGRO_ALIGN_CENTRE, "Mas nao lembra quem...");
                     }
                     if(time==3){
-                    al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "Seu amigo havia te convidado para");
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Seu amigo havia te convidado para");
                     al_draw_text(font2,al_map_rgb(255,255,255),250,55, ALLEGRO_ALIGN_CENTRE, "sair e te comprou uma substancia...");
                     }
                     if(time==4){
@@ -2417,6 +2429,7 @@ void intro(int choichoi,int time){
                 }
                 else
                 al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Voce perdeu sem dica dessa vez");
+                
                 al_draw_text(font2,al_map_rgb(255,255,255),350,500, ALLEGRO_ALIGN_CENTRE, "Press Enter to Continue");
               al_flip_display();
             
@@ -2424,27 +2437,34 @@ void intro(int choichoi,int time){
         }
     
     }  
+    //this void make some differents things, that depends if you got the right history or not
     void youwin(int s_n,int choichoi){
-        ALLEGRO_BITMAP *a;
+        ALLEGRO_BITMAP *a,*b;
      al_clear_to_color(al_map_rgb(0,0,0));
      al_flip_display();
         if(choichoi==1){
-            a= dance1;   
+            a= dance1;
+            b=fall1;   
         }
         if(choichoi==2){
-            a= dance2;   
+            a= dance2;
+            b=fall2;     
         }
         if(choichoi==3){
-            a= dance3;   
+            a= dance3; 
+            b=fall3;    
         }
         if(choichoi==4){
             a= dance4;   
+            b=fall4;  
         }
         if(choichoi==5){
             a= dance5;   
+            b=fall5;  
         }
         if(choichoi==6){
             a= dance6;
+            b=fall6;  
         }
         int colunas=7;
         int frames=10;
@@ -2483,7 +2503,7 @@ void intro(int choichoi,int time){
                 if(desenha){
                   al_set_target_bitmap(newspr);
                   al_clear_to_color(al_map_rgb(0,0,0));
-                  al_draw_bitmap_region(a,regiaox,0,largura,altura,0,0,0);
+                  (s_n==1)?al_draw_bitmap_region(a,regiaox,0,largura,altura,0,0,0):al_draw_bitmap_region(b,regiaox,0,largura,altura,0,0,0);
                   al_set_target_bitmap(al_get_backbuffer(display));
                   al_draw_bitmap(newspr,150,300,0);
                 }
@@ -2492,26 +2512,31 @@ void intro(int choichoi,int time){
                 al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "seu assasino...");
                 }
                 else if(s_n==2){
-                    al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "acho que nao foi bem isso");
-               
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,45, ALLEGRO_ALIGN_CENTRE, "Acho que nao foi bem isso");
                     }
-                else{
-                    al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Voce passou perto");
-                    }
+                else if(s_n==3){
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,20, ALLEGRO_ALIGN_CENTRE, "Pelo menos voce chegou ate aqui!");
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,45, ALLEGRO_ALIGN_CENTRE, "NAO TRANCA O CURSO");
+                }
+                else if(s_n==4){
+                      al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Voce nao chegou nem um pouco perto");
+                }
+                    
                     al_draw_text(font2,al_map_rgb(255,255,255),350,500, ALLEGRO_ALIGN_CENTRE, "Press Enter to Ranking");
               al_flip_display();
             }
         
         }
-     
+     //KKK
 int main()
 {
-    qu *v,*v1,*v2;
-    int ex=0,resp[50];
-    int perg[50]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    qu *v;
+    swer *vv;
+    int ex=0,resp[33];
+    int perg[30]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     int *resper,r_n,M_F;
     char *nome;
-    int champ;
+    int champ=1;
     int qualMinijafoi[4],qualmini;
     
     
@@ -2535,6 +2560,7 @@ int main()
     
     printf("%s saiu\n",nome);
     v =  question();
+    vv = questionop();
     resper = answer();
     //printf("%s",v[0].q);
     int i=0,l,dica;
@@ -2573,16 +2599,8 @@ int main()
                     darDica(champ,1,dica);
               }
               else{
-                  lvl(v,perg,&resp[i],&l,i,&r_n,p);
+                  lvl(v,perg,&resp[i],&l,i,&r_n,p,vv);
                   if(i==6||i==14||i==22||i==30){
-                        ALLEGRO_BITMAP *nsei;
-                        nsei=al_create_bitmap(200,40);
-                        al_set_target_bitmap(nsei);
-                        al_clear_to_color(al_map_rgb(0,255,0));
-                        al_draw_text(font2,al_map_rgb(0,255,0),540,20, ALLEGRO_ALIGN_CENTRE, "Vai na Sorte");
-                        al_set_target_bitmap(al_get_backbuffer(display));
-                        al_draw_bitmap(nsei,340,20,0);
-                        al_flip_display();
                         srand(time(NULL));
                         int port;
                         port=rand()%3;
@@ -2631,19 +2649,22 @@ int main()
                                 }
                             }
                         }
+                  else if(i==32);
                   else{
                       if(!r_n){
                           if(resp[i]!=resper[l]){
-                                youwin(2,champ);
+                                youwin(4,champ);
                                              ranking(nome,p);
+                                             ex=1;
                           }
                           else
                           p++;
                       }     
                       else{
                            if(resp[i]!=resp[l]){
-                                youwin(2,champ);
-                                               ranking(nome,p);
+                                youwin(4,champ);
+                                ranking(nome,p);
+                                ex=1;
                            }
                            else
                            p++;
@@ -2653,9 +2674,10 @@ int main()
               printf("%d\n%d\n%d\n",resp[i],resper[l],perg[i]);
               i++; 
               if(i==33){
-              youwin(1,champ);
+              (resp[32]==1)?youwin(1,champ):((resp[32]==2)?youwin(2,champ):youwin(3,champ));
+             (resp[32]==1)?(p+=p/10):((resp[32]==2)?(p=p):(p-=3));
               ranking(nome,p);
-                        
+              ex=1;          
               }
     }
     free(nome);
