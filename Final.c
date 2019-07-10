@@ -634,6 +634,13 @@ int iniciar(){
                  while (!ocorreu){
                      ALLEGRO_EVENT evento;
                      al_wait_for_event(fila,&evento); 
+                   if (evento.type==ALLEGRO_EVENT_KEY_DOWN){
+                        if(evento.keyboard.keycode==ALLEGRO_KEY_P){
+                            ans++;
+                            *n=4;
+                            ocorreu=1;
+                            }    
+                    }
                    if(evento.type == ALLEGRO_EVENT_MOUSE_AXES){
                                //printf("ta reconhecendo a porta\n");
                                w=140;
@@ -932,9 +939,9 @@ int iniciar(){
      void Male_Female(int *M_F,char *nome){
          al_clear_to_color(al_map_rgb(0,255,0));
          al_draw_text(font,al_map_rgb(255,255,255),540, 50, ALLEGRO_ALIGN_CENTRE, nome);
-         al_draw_text(font,al_map_rgb(255,255,255),540,100, ALLEGRO_ALIGN_CENTRE, "ARE YOU?");
-         al_draw_text(font,al_map_rgb(255,255,255),540,250, ALLEGRO_ALIGN_CENTRE, "PRESS M TO MALE");
-         al_draw_text(font,al_map_rgb(255,255,255),540,450, ALLEGRO_ALIGN_CENTRE, "PRES F TO FEMALE");
+         al_draw_text(font,al_map_rgb(255,255,255),540,100, ALLEGRO_ALIGN_CENTRE, "HOMEM OU MULHER?");
+         al_draw_text(font,al_map_rgb(255,255,255),540,250, ALLEGRO_ALIGN_CENTRE, "APERTE M PARA HOMEM");
+         al_draw_text(font,al_map_rgb(255,255,255),540,450, ALLEGRO_ALIGN_CENTRE, "APERTE F PARA MULHER");
          al_flip_display();
          int decidido=0;
          while(!decidido){
@@ -1082,11 +1089,11 @@ int iniciar(){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
                 al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Ola, eu sou ...");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "Espera eu sou voce na verdade, pode");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "Espera, eu sou voce na verdade. Pode");
                 al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "parecer um pouco estranho, mas seja");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "bem vindo ao Tres portas, acalmesse" );
-                al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "eu irei 'me' contar nossa  historia...");
-                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "bem vindo ao Tres Portas. Acalme-se," );
+                al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "eu irei 'te' contar 'nossa'  historia...");
+                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "APERTE ENTER PARA CONTINUAR");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
               }
@@ -1094,37 +1101,37 @@ int iniciar(){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
                 al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Bom, como voce deve saber, ou melhor eu,");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "sempre fomos muito amigaveis  com  todos");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "adoravamos caminhar de noite como todos,");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "mas em um certo dia algo muito  estranho");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "sempre fomos muito amigaveis com todos.");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "Adoravamos caminhar de noite com todos.");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "Mas, em um certo dia, algo muito estranho");
                 al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "aconteceu...");
-                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
+                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "APERTE ENTER PARA CONTINUAR");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
               }
               if(txt==2){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
-                al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Infelizmente nao nos lembramos de  tudo, mas");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "eu acredito que talvez possamos descobrir,");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "preciso de sua ajuda, ou no caso  da minha");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Infelizmente, nao me lembro de tudo, mas");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "eu acredito que talvez possamos descobrir.");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "Preciso de sua ajuda, ou no caso da minha,");
                 al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "para descobrir quem nos trancou aqui...");
-                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
+                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "APERTE ENTER PARA CONTINUAR");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
               }
               if(txt==3){
                 al_set_target_bitmap(textbox);
                 al_clear_to_color(al_map_rgb(0,255,0));
-                al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Nao vai ser uma tarefa  facil,  mas  acredito");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "que conseguiremos, bom o papo e o seguinte");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "temos que acertar a porta certa em cada sala");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "a cada 7 niveis teremos um desafio extra, na");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "lembre-se da resposta de cada nivel, isso");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,135, ALLEGRO_ALIGN_CENTRE, "pode ser de grande ajuda, e para o final na");
-                al_draw_text(font2,al_map_rgb(255,255,255),250,160, ALLEGRO_ALIGN_CENTRE, "ultima fase teremos de descobrir o que realmente");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,10, ALLEGRO_ALIGN_CENTRE, "Nao vai ser uma tarefa facil, mas acredito");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,35, ALLEGRO_ALIGN_CENTRE, "que conseguiremos. Bom, o papo e o seguinte:");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,60, ALLEGRO_ALIGN_CENTRE, "temos que acertar a porta certa em cada sala.");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,85, ALLEGRO_ALIGN_CENTRE, "A cada 7 niveis, teremos um desafio extra.");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,110, ALLEGRO_ALIGN_CENTRE, "Lembre-se da resposta de cada nivel - isso");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,135, ALLEGRO_ALIGN_CENTRE, "pode ser de grande ajuda - e para o final");
+                al_draw_text(font2,al_map_rgb(255,255,255),250,160, ALLEGRO_ALIGN_CENTRE, "teremos de descobrir o que realmente");
                 al_draw_text(font2,al_map_rgb(255,255,255),250,185, ALLEGRO_ALIGN_CENTRE, "aconteceu na nossa noite... (flashback time)");
-                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "Press Enter to continue");
+                al_draw_text(font2,al_map_rgb(255,255,255),350,400, ALLEGRO_ALIGN_CENTRE, "APERTE ENTER PARA CONTINUAR");
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(textbox,400,100,0);
               }
@@ -1546,7 +1553,17 @@ int checkNearbySquares(bool **terrainBomb, int m, int n){
     
     return totalBombs;
 }
-
+int skip(){
+    ALLEGRO_EVENT ev;
+    al_wait_for_event(fila, &ev); 
+    if(ev.type == ALLEGRO_EVENT_KEY_DOWN){
+            if(ev.keyboard.keycode==ALLEGRO_KEY_ENTER){
+                return 1;
+            }   
+    }
+    return 0;
+}
+    
 int minijojo2(int *dica){
     int i,j;
     srand(time(NULL));
@@ -1567,7 +1584,7 @@ int minijojo2(int *dica){
         terrainBomb[i] = (bool *)malloc(sizeof(bool) * SIZEARR);
     bool redraw = 1;
     int dificuldade = 15;
-    int offsetY=80,offsetX=220;
+    const int offsetY=80,offsetX=220;
     // INICIALIZAÇÕES.
     if(!al_init()) {
         fprintf(stderr, "failed to initialize allegro!\n");
@@ -1643,19 +1660,19 @@ int minijojo2(int *dica){
     while(!ex){
         ALLEGRO_EVENT ev;
         al_wait_for_event(event_queue, &ev);        
-
+        
         if(ev.type == ALLEGRO_EVENT_TIMER)
             redraw = 1;
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
             break;
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
             
-             if(terrainBomb[(int)floor(ev.mouse.y / (80+(HEIGHT/10)))][(int)floor(ev.mouse.x / (220+(WIDTH/10)))]){
+             if(terrainBomb[(int)floor((ev.mouse.y - offsetY) / (+(HEIGHT/10)))][(int)floor((ev.mouse.x - offsetX) / ((WIDTH/10)))]){
                 al_set_target_bitmap(window);
                 al_clear_to_color(al_map_rgb(0, 0, 0));
                 al_draw_textf(font, al_map_rgb(255, 255, 255), offsetX + WIDTH/2, offsetY + HEIGHT/2, ALLEGRO_ALIGN_CENTRE, "YOU LOST");
-                terrain[(int)floor(ev.mouse.y / (HEIGHT/10 + offsetY))][(int)floor(ev.mouse.x / (WIDTH/10 + offsetX))] = al_load_bitmap("bomb_found.bmp");
-                al_draw_bitmap(terrain[(int)floor(ev.mouse.y / (HEIGHT/10 + offsetY))][(int)floor(ev.mouse.x / (WIDTH/10 + offsetX))], ev.mouse.x, ev.mouse.y, 0);
+                terrain[(int)floor(ev.mouse.y - offsetY / (HEIGHT/10))][(int)floor(ev.mouse.x - offsetX / (WIDTH/10))] = al_load_bitmap("bomb_found.bmp");
+                al_draw_bitmap(terrain[(int)floor(ev.mouse.y - offsetY / (HEIGHT/10))][(int)floor(ev.mouse.x - offsetX / (WIDTH/10))], ev.mouse.x, ev.mouse.y, 0);
                 al_set_target_bitmap(al_get_backbuffer(display));
                 al_draw_bitmap(window, 220, 80, 0);
                 al_flip_display();
@@ -1664,7 +1681,7 @@ int minijojo2(int *dica){
                 break;
             }
             else
-                terrainBool[(int)floor(ev.mouse.y / (offsetY+(HEIGHT/10)))][(int)floor(ev.mouse.x / (offsetX+(WIDTH/10)))] = 0;
+                terrainBool[(int)floor((ev.mouse.y - offsetY) / ((HEIGHT/10)))][(int)floor((ev.mouse.x - offsetX)/ ((WIDTH/10)))] = 0;
         }
         if(redraw && al_is_event_queue_empty(event_queue)) {
             redraw = 0;
@@ -1685,7 +1702,7 @@ int minijojo2(int *dica){
                 }
             }  /// TODO: E SE O CARA CONSEGUIR TERMINAR.
             
-            if(areSameArray(terrainBomb, terrainBool)){
+            if(skip()||areSameArray(terrainBomb, terrainBool)){
                 al_set_target_bitmap(window);
                 al_clear_to_color(al_map_rgb(0, 0, 0));
                 al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH/2, HEIGHT/2, ALLEGRO_ALIGN_CENTRE, "YOU WON!");
@@ -2417,14 +2434,15 @@ void intro(int choichoi,int time){
                     al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Voce lembra-se de ter ido a um 'evento'");
                     if(time==2){
                     al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Voce encontrou alguem,");
-                    al_draw_text(font2,al_map_rgb(255,255,255),250,55, ALLEGRO_ALIGN_CENTRE, "Mas nao lembra quem...");
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,65, ALLEGRO_ALIGN_CENTRE, "Mas nao lembra quem...");
                     }
                     if(time==3){
                     al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Seu amigo havia te convidado para");
-                    al_draw_text(font2,al_map_rgb(255,255,255),250,55, ALLEGRO_ALIGN_CENTRE, "sair e te comprou uma substancia...");
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,65, ALLEGRO_ALIGN_CENTRE, "sair e te comprou uma substancia...");
                     }
                     if(time==4){
-                        
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,40, ALLEGRO_ALIGN_CENTRE, "Suas maos agora estao sujas,");
+                    al_draw_text(font2,al_map_rgb(255,255,255),250,65, ALLEGRO_ALIGN_CENTRE, "ESPERA ISSO NAO E KETCHUP...");
                     }
                 }
                 else
@@ -2527,6 +2545,7 @@ void intro(int choichoi,int time){
             }
         
         }
+        
      //KKK
 int main()
 {
@@ -2600,76 +2619,82 @@ int main()
               }
               else{
                   lvl(v,perg,&resp[i],&l,i,&r_n,p,vv);
-                  if(i==6||i==14||i==22||i==30){
-                        srand(time(NULL));
-                        int port;
-                        port=rand()%3;
-                            if(port==0){
-                                if(resp[i]==1){
-                                    p=p+p/2;
+                      if(i==6||i==14||i==22||i==30){
+                            srand(time(NULL));
+                            int port;
+                            port=rand()%3;
+                                if(port==0){
+                                    if(resp[i]==1){
+                                        p=p+p/2;
+                                    }
+                                    if(resp[i]==2){
+                                        p=p-p/2;
+                                    }
+                                    if(resp[i]==3){
+                                        p=p;
+                                    }
                                 }
-                                if(resp[i]==2){
-                                    p=p-p/2;
+                                if(port==1){
+                                    if(resp[i]==2){
+                                        p=p+p/2;
+                                    }
+                                    if(resp[i]==1){
+                                        p=p-p/2;
+                                    }
+                                    if(resp[i]==3){
+                                        p=p;
+                                    }
                                 }
-                                if(resp[i]==3){
-                                    p=p;
+                                if(port==2){
+                                    if(resp[i]==3){
+                                        p=p+p/2;
+                                    }
+                                    if(resp[i]==2){
+                                        p=p-p/2;
+                                    }
+                                    if(resp[i]==1){
+                                        p=p;
+                                    }
+                                }
+                                if(port==3){
+                                    if(resp[i]==2){
+                                        p=p+p/2;
+                                    }
+                                    if(resp[i]==3){
+                                        p=p-p/2;
+                                    }
+                                    if(resp[i]==1){
+                                        p=p;
+                                    }
                                 }
                             }
-                            if(port==1){
-                                if(resp[i]==2){
-                                    p=p+p/2;
-                                }
-                                if(resp[i]==1){
-                                    p=p-p/2;
-                                }
-                                if(resp[i]==3){
-                                    p=p;
-                                }
-                            }
-                            if(port==2){
-                                if(resp[i]==3){
-                                    p=p+p/2;
-                                }
-                                if(resp[i]==2){
-                                    p=p-p/2;
-                                }
-                                if(resp[i]==1){
-                                    p=p;
-                                }
-                            }
-                            if(port==3){
-                                if(resp[i]==2){
-                                    p=p+p/2;
-                                }
-                                if(resp[i]==3){
-                                    p=p-p/2;
-                                }
-                                if(resp[i]==1){
-                                    p=p;
-                                }
-                            }
-                        }
-                  else if(i==32);
-                  else{
-                      if(!r_n){
-                          if(resp[i]!=resper[l]){
-                                youwin(4,champ);
-                                             ranking(nome,p);
-                                             ex=1;
-                          }
-                          else
-                          p++;
-                      }     
+                      else if(i==32);
                       else{
-                           if(resp[i]!=resp[l]){
-                                youwin(4,champ);
-                                ranking(nome,p);
-                                ex=1;
-                           }
-                           else
-                           p++;
-                      } 
-                  }
+                            if(resp[i]==4){
+                                p++;
+                            }
+                            else{
+                                  if(!r_n){
+                                      if(resp[i]!=resper[l]){
+                                            youwin(4,champ);
+                                                         ranking(nome,p);
+                                                         ex=1;
+                                      }
+                                      else
+                                      p++;
+                                  }     
+                                  else{
+                                       if(resp[i]!=resp[l]){
+                                            youwin(4,champ);
+                                            ranking(nome,p);
+                                            ex=1;
+                                       }
+                                       else
+                                       p++;
+                                  } 
+                            }
+                      }
+                
               }             
               printf("%d\n%d\n%d\n",resp[i],resper[l],perg[i]);
               i++; 
